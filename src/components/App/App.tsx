@@ -7,14 +7,16 @@ import NoteModal from '../NoteModal/NoteModal';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { fetchNotes } from '../../services/noteService';
 import { useDebounce } from 'use-debounce';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import { DotLoader } from 'react-spinners';
 
-function App() {
+export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
-  const { data } = useQuery({
+  const { data, isSuccess, isPending, isError } = useQuery({
     queryKey: ['notes', debouncedSearchQuery, currentPage],
     queryFn: () => fetchNotes(debouncedSearchQuery || '', currentPage),
     placeholderData: keepPreviousData,
@@ -33,13 +35,13 @@ function App() {
     setIsModalOpen(false);
   };
   
-  const notes = data?.notes;
+  //const notes = data?.notes;
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox searchQuery={searchQuery} onChange={handleSearch} />
-        {data && data.totalPages > 1 && (
+        {isSuccess && data.totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             onPageChange={setCurrentPage}
@@ -50,10 +52,16 @@ function App() {
           Create note +
         </button>
       </header>
-      {notes && notes.length > 0 && <NoteList notes={notes} />}
+      {isSuccess && data.notes.length > 0 && <NoteList notes={data.notes} />}
+      {isError && <ErrorMessage/>}
       {isModalOpen && <NoteModal onClose={closeModal} />}
+      {isPending && (
+              <DotLoader  
+                        color='blue'
+                        size={30}
+                        />
+      )}
     </div>
   );
 }
 
-export default App;
