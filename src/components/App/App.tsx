@@ -35,7 +35,7 @@ export default function App() {
     setIsModalOpen(false);
   };
   
-  //const notes = data?.notes;
+ 
 
   return (
     <div className={css.app}>
@@ -59,6 +59,7 @@ export default function App() {
               <DotLoader  
                         color='blue'
                         size={30}
+                        
                         />
       )}
     </div>

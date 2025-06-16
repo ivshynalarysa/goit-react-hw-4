@@ -3,6 +3,7 @@ import { deleteNote } from '../../services/noteService';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Note } from '../../types/note';
 
+
 interface NoteListProps {
   notes: Note[];
 }
@@ -20,6 +21,7 @@ export default function NoteList({ notes }: NoteListProps) {
   if (!notes.length) {
     return <p>No notes found.</p>;
   }
+  
 
   return (
     <ul className={css.list}>
@@ -39,5 +41,6 @@ export default function NoteList({ notes }: NoteListProps) {
         </li>
       ))}
     </ul>
+     
   );
 }
